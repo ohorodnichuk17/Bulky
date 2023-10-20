@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace BulkyWeb.Migrations
+namespace Bulky.DataAccess.Migrations
 {
     public partial class SeedCategoryTable : Migration
     {
