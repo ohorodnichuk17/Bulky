@@ -4,14 +4,23 @@
 
 namespace Bulky.DataAccess.Migrations
 {
-    public partial class SeedCategoryTable : Migration
+    public partial class AddCategoryToDbAndSeedTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Category21Id",
-                table: "Categories",
-                newName: "Id");
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    DisplayOrder = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
 
             migrationBuilder.InsertData(
                 table: "Categories",
@@ -31,25 +40,8 @@ namespace Bulky.DataAccess.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DeleteData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 1);
-
-            migrationBuilder.DeleteData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 2);
-
-            migrationBuilder.DeleteData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 3);
-
-            migrationBuilder.RenameColumn(
-                name: "Id",
-                table: "Categories",
-                newName: "Category21Id");
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }
