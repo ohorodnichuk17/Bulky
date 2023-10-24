@@ -12,7 +12,7 @@ namespace Bulky.Models
 {
     public class Product
     {
-        [Key]
+        //[Key]
         public int Id { get; set; }
         [Required]
         [DisplayName("Category Name")]
@@ -48,6 +48,7 @@ namespace Bulky.Models
         [ValidateNever]
         public Category Category { get; set; }
 
+        [ValidateNever]
         public string ImageUrl { get; set; }
     }
 }
