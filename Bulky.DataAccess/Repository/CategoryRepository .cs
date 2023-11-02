@@ -10,18 +10,18 @@ using System.Threading.Tasks;
 
 namespace Bulky.DataAccess.Repository
 {
-    public class CompanyRepository : Repository<Company>, ICompanyRepository
+    public class CategoryRepository : Repository<Category>, ICategoryRepository
     {
         private ApplicationDbContext _db;
 
-        public CompanyRepository(ApplicationDbContext db) : base(db)
+        public CategoryRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
 
-        public void Update(Company company)
+        public void Update(Category category)
         {
-            _db.Companies.Update(company);
+            _db.Categories.Update(category);
         }
     }
 }
