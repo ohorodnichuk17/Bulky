@@ -55,6 +55,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
             {
                 _unitOfWork.ShoppingCart.Add(cart);
             }
+            TempData["success"] = "Cart updated successfully";
 
             cart.Id = 0;
 
