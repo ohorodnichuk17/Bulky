@@ -8,7 +8,6 @@ namespace BulkyWeb.ViewComponents
     public class ShoppingCartViewComponent : ViewComponent
     {
         private readonly IUnitOfWork _unitOfWork;
-
         public ShoppingCartViewComponent(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -21,10 +20,13 @@ namespace BulkyWeb.ViewComponents
 
             if (claim != null)
             {
+
                 if (HttpContext.Session.GetInt32(SD.SessionCart) == null)
                 {
-                    HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value).Count());
+                    HttpContext.Session.SetInt32(SD.SessionCart,
+                        _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value).Count());
                 }
+
                 return View(HttpContext.Session.GetInt32(SD.SessionCart));
             }
             else
