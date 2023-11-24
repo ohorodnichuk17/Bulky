@@ -47,17 +47,17 @@ namespace Bulky.DataAccess.DbInitializer
 
                 _userManager.CreateAsync(new ApplicationUser
                 {
-                    UserName = "admin@gmail.com",
-                    Email = "admin@gmail.com",
-                    Name = "Admin Admin",
-                    PhoneNumber = "0680000000",
-                    StreetAddress = "Soborna",
-                    State = "Kyivska",
-                    PostalCode = "22001",
-                    City = "Kyiv"
+                    UserName = "admin@dotnetmastery.com",
+                    Email = "admin@dotnetmastery.com",
+                    Name = "Bhrugen Patel",
+                    PhoneNumber = "1112223333",
+                    StreetAddress = "test 123 Ave",
+                    State = "IL",
+                    PostalCode = "23422",
+                    City = "Chicago"
                 }, "Admin123*").GetAwaiter().GetResult();
 
-                ApplicationUser user = _db.ApplicationUsers.FirstOrDefault(u => u.Email == "admin@gmail.com");
+                ApplicationUser user = _db.ApplicationUsers.FirstOrDefault(u => u.Email == "admintest@gmail.com");
                 _userManager.AddToRoleAsync(user, SD.Role_Admin).GetAwaiter().GetResult();
             }
             return;
