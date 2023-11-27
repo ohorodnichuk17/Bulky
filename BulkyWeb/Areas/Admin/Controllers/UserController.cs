@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using Bulky.DataAccess.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BulkyWeb.Areas.Admin.Controllers
@@ -18,20 +19,75 @@ namespace BulkyWeb.Areas.Admin.Controllers
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _db;
-        public UserController(ApplicationDbContext db)
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public UserController(ApplicationDbContext db, UserManager<IdentityUser> userManager)
         {
             _db = db;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
             return View();
         }
 
+        public IActionResult RoleManagment(string userId)
+        {
+            string roleId = _db.UserRoles.FirstOrDefault(u => u.UserId == userId).RoleId;
 
+            RoleManagmentVM roleVM = new RoleManagmentVM()
+            {
+                ApplicationUser = _db.ApplicationUsers.Include(u => u.Company).FirstOrDefault(u => u.Id == userId),
+                RoleList = _db.Roles.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Name
+                }),
+                CompanyList = _db.Companies.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                }),
+            };
 
-        #region API CALLS
+            roleVM.ApplicationUser.Role = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
 
-        [HttpGet]
+            return View(roleVM);
+        }
+
+        [HttpPost]
+		public IActionResult RoleManagment(RoleManagmentVM roleManagmentVm)
+		{
+			string roleId = _db.UserRoles.FirstOrDefault(u => u.UserId == roleManagmentVm.ApplicationUser.Id).RoleId;
+			string oldRole = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+
+			if (!(roleManagmentVm.ApplicationUser.Role == oldRole))
+			{
+				ApplicationUser applicationUser =
+					_db.ApplicationUsers.FirstOrDefault(u => u.Id == roleManagmentVm.ApplicationUser.Id);
+				if (roleManagmentVm.ApplicationUser.Role == SD.Role_Company)
+				{
+					applicationUser.CompanyId = roleManagmentVm.ApplicationUser.CompanyId;
+				}
+
+				if (oldRole == SD.Role_Company)
+				{
+					applicationUser.CompanyId = null;
+				}
+
+				_db.SaveChanges();
+
+				_userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
+				_userManager.AddToRoleAsync(applicationUser, roleManagmentVm.ApplicationUser.Role).GetAwaiter().GetResult();
+			}
+			
+
+			return View("Index");
+		}
+
+		#region API CALLS
+
+		[HttpGet]
         public IActionResult GetAll()
         {
             List<ApplicationUser> objUserList = _db.ApplicationUsers.Include(u => u.Company).ToList();
